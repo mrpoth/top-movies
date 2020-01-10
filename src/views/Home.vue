@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <MovieCard />
+    <MovieCard v-bind:movies="movies"/>
   </div>
 </template>
 
@@ -12,6 +12,21 @@ export default {
   name: 'home',
   components: {
     MovieCard
+  },
+      data() {
+    return {
+      movies: 
+        {
+          id: 10,
+          title:'Blade Runner 2049',
+          release_date: '2017',
+          genres: ['Action', 'Drama', 'Mystery'],
+          actors: ['Ryan Gosling', 'Harrison Ford'],
+          rating: 8.9,
+          position: 10
+        }
+      
+    }
   }
 
 }
