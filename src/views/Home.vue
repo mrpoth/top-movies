@@ -55,7 +55,7 @@ export default {
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;
           (this.movies.poster = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`),
-          this.movies.release_date = movie.release_date.slice(0, 4);
+            (this.movies.release_date = movie.release_date.slice(0, 4));
           this.movies.overview = movie.overview;
           console.log(res.data.results[0]);
           this.getGenres(movie.id);
