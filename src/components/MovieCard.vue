@@ -1,6 +1,6 @@
 <template>
 <div>
-<img class="movie-poster" src="https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTgwODk5NjU3MzI@._V1_.jpg">
+<img class="movie-poster" :src="movies.poster">
 <h2 v-text="movies.title"></h2>
 <h2>({{movies.release_date}})</h2>
 <h4>Actors:</h4>
@@ -11,9 +11,9 @@
 <ul>
 <li v-for="genre in movies.genres" v-bind:key="genre.id">{{genre}}</li>
 </ul>
-<h5 v-bind="movies">Rating: {{movies.rating}} | Top 250: #{{movies.position}}</h5>
-<div><button class="btn">Watched</button></div>
-<div><button class="btn">Show Another</button></div>
+<h5 v-bind="movies">Rating: {{movies.rating}}</h5>
+<div><button @click="$emit('add-watched')" class="btn" :disabled="disabled">Watched</button></div>
+<div><button @click="$emit('show-another')" class="btn">Show Another</button></div>
 
 </div>
 </template>
@@ -21,7 +21,12 @@
 <script>
 export default {
   name: 'MovieCard',
-  props: ['movies']
+  props: ['movies'],
+  data() {
+    return {
+      disabled:false
+    }
+  }
 }
 </script>
 
