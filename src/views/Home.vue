@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" v-bind:watchedMovies="watchedMovies">
     <MovieCard
       v-on:add-watched="addToWatched"
       v-on:show-another="showAnother"
@@ -37,13 +37,14 @@ export default {
   methods: {
     addToWatched() {
       this.watchedMovies.push(this.movies.id);
+      localStorage.setItem("watchedMovies", JSON.stringify(this.watchedMovies));
     },
     showAnother() {
       this.getMovie();
     },
     getMovie(randomResult, randomPage) {
       //First, get one of the top-rated movies
-      randomPage = Math.floor(Math.random() * 20);
+      randomPage = Math.floor(1 + Math.random() * 20);
       axios
         .get(
           `https://api.themoviedb.org/3/movie/top_rated?api_key=8a1d8477e658ad295f6cb31a24577b88&language=en-US&page=${randomPage}`
@@ -51,6 +52,15 @@ export default {
         .then(res => {
           randomResult = Math.floor(Math.random() * 13);
           let movie = res.data.results[randomResult];
+          let moviesWatched = JSON.parse(localStorage.watchedMovies);
+
+          if (!moviesWatched.includes(movie.id)) {
+            movie = res.data.results[randomResult];
+          } else {
+            console.log(`already watched ${movie.title}`);
+            randomResult = Math.floor(Math.random() * 13);
+            movie = res.data.results[randomResult];
+          }
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;
@@ -81,6 +91,9 @@ export default {
   },
   mounted() {
     this.getMovie();
+    if (localStorage.watchedMovies) {
+      this.watchedMovies = JSON.parse(localStorage.watchedMovies);
+    }
   }
 };
 </script>
