@@ -11,6 +11,7 @@
 <script>
 export default {
   methods:{
+    
     changeTheme() {
       let body = document.getElementsByTagName('body')[0];
       let home = document.getElementById('home');
