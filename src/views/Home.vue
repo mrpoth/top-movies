@@ -1,5 +1,5 @@
 <template>
-  <div class="home" v-bind:watchedMovies="watchedMovies">
+  <div class="home" id="home" v-bind:watchedMovies="watchedMovies">
     <MovieCard
       v-on:add-watched="addToWatched"
       v-on:show-another="showAnother"
@@ -52,7 +52,13 @@ export default {
         .then(res => {
           randomResult = Math.floor(Math.random() * 13);
           let movie = res.data.results[randomResult];
-          let moviesWatched = JSON.parse(localStorage.watchedMovies);
+          
+          let moviesWatched;
+          if (localStorage.watchedMovies) {
+            moviesWatched = JSON.parse(localStorage.watchedMovies);
+          } else {
+            moviesWatched = '';
+          }
 
           if (!moviesWatched.includes(movie.id)) {
             movie = res.data.results[randomResult];
@@ -64,8 +70,8 @@ export default {
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;
-          (this.movies.poster = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`),
-            (this.movies.release_date = movie.release_date.slice(0, 4));
+          (this.movies.poster = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`);
+          (this.movies.release_date = movie.release_date.slice(0, 4));
           this.movies.overview = movie.overview;
           console.log(res.data.results[0]);
           this.getGenres(movie.id);
@@ -97,11 +103,3 @@ export default {
   }
 };
 </script>
-<style>
-body {
-  background-color: #1b262c;
-}
-.home {
-  color: #bbe1fa;
-}
-</style>

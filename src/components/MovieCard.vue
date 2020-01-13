@@ -49,18 +49,11 @@ li {
   width: 100%;
   height: auto;
   max-width: 280px;
-  box-shadow: 6px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  border: 3px solid black;
+  box-shadow: 1px 1px 20px 3px #828282;
+  border-radius:5px;
 }
 
-.btn {
-  background-color: #3282b8;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px auto;
-}
+
 @media (min-width: 1025px) {
   .story-overview {
     max-width: 35%;
