@@ -1,5 +1,5 @@
 <template>
-  <div class="home" id="home" v-bind:watchedMovies="watchedMovies">
+  <div class="home" id="home">
     <MovieCard
       v-on:add-watched="addToWatched"
       v-on:show-another="showAnother"
@@ -31,27 +31,39 @@ export default {
         randomPage: "",
         overview: ""
       },
-      watchedMovies: []
+      watchedMovies: [{
+        title: "",
+        movie_id: ""
+      }]
     };
   },
   methods: {
     addToWatched() {
-      this.watchedMovies.push(this.movies.id);
-      localStorage.setItem("watchedMovies", JSON.stringify(this.watchedMovies));
+      this.watchedMovies.title = this.movies.title;
+      this.watchedMovies.movie_id= this.movies.id;
+
+      axios.post("http://localhost:3000/api/movie/watched", {
+        title: this.watchedMovies.title,
+        movie_id: this.watchedMovies.movie_id
+      })
+      .then(res => {
+        return res.data
+      }).catch(err => {
+        console.log(err)
+      })
+      
     },
     showAnother() {
       this.getMovie();
     },
-    getMovie(randomResult, randomPage) {
+    getMovie() {
       //First, get one of the top-rated movies
-      randomPage = Math.floor(1 + Math.random() * 20);
       axios
         .get(
-          `https://api.themoviedb.org/3/movie/top_rated?api_key=8a1d8477e658ad295f6cb31a24577b88&language=en-US&page=${randomPage}`
+          "http://localhost:3000/api/movie"
         )
         .then(res => {
-          randomResult = Math.floor(Math.random() * 13);
-          let movie = res.data.results[randomResult];
+          let movie = res.data;
 
           let moviesWatched;
           if (localStorage.watchedMovies) {
@@ -61,11 +73,10 @@ export default {
           }
 
           if (!moviesWatched.includes(movie.id)) {
-            movie = res.data.results[randomResult];
+            movie = res.data;
           } else {
             console.log(`already watched ${movie.title}`);
-            randomResult = Math.floor(Math.random() * 13);
-            movie = res.data.results[randomResult];
+            movie = res.data;
           }
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
@@ -73,7 +84,6 @@ export default {
           this.movies.poster = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
           this.movies.release_date = movie.release_date.slice(0, 4);
           this.movies.overview = movie.overview;
-          console.log(res.data.results[0]);
           this.getGenres(movie.id);
         })
         .catch(err => {
@@ -88,18 +98,14 @@ export default {
         )
         .then(res => {
           this.movies.genres = res.data.genres;
-          console.log(res.data);
         })
         .catch(err => {
           console.log(err);
         });
-    }
+    },
   },
   mounted() {
     this.getMovie();
-    if (localStorage.watchedMovies) {
-      this.watchedMovies = JSON.parse(localStorage.watchedMovies);
-    }
   }
 };
 </script>
