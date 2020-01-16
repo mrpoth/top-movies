@@ -1,14 +1,29 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const axios = require('axios')
-const pgp = require('pg-promise')(/* options */);
 const bodyParser = require('body-parser');
+const mysql = require('mysql')
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 const port = 3000
 
-const db = pgp('postgres://feleg:addpeople123@localhost:5432/movies_api')
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
+})
+
+// connection.query('SELECT * FROM watched_movies', function (error, rows, fields) {
+//   let movieIds = [];
+//   rows.forEach(rows => {
+//     movieIds.push(rows.movie_id)
+//     return movieIds
+//   })
+// })
 
 app.get('/api/movie', (req, res) => {
     let randomPage = Math.floor(1 + Math.random() * 20);
@@ -25,22 +40,20 @@ app.get('/api/movie', (req, res) => {
         });
 })
 
-app.get('/api/movie/watched-movies', (req, res) => {
-    db.any('SELECT * FROM watched_movies')
-    .then(data => {
-        res.json(data)
-    })
+app.get('/api/movie/watched', (req, res) => {
+
+connection.query('SELECT * FROM watched_movies', function (error, rows, fields) {
+        res.json(rows)
+        if(error) {
+          console.log(error)
+        }
+})
+
+
 })
 
 
 app.post('/api/movie/watched', (req, res) => {
-    db.none('INSERT INTO watched_movies(title, movie_id) VALUES($1, $2)' , [`${req.body.title}`, `${req.body.movie_id}`])
-    .then( data => {
-        console.log(data)
-
-    }).catch(error => {
-        console.log(error)
-    })
     console.log(req.body)
 })
 
