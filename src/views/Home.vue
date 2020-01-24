@@ -27,8 +27,6 @@ export default {
         genres: [],
         rating: "",
         poster: "",
-        randomResult: "",
-        randomPage: "",
         overview: ""
       },
       watchedMovies: [{
@@ -60,24 +58,10 @@ export default {
       //First, get one of the top-rated movies
       axios
         .get(
-          "http://localhost:3000/api/movie"
+          "http://localhost:3000/api/movie/db"
         )
         .then(res => {
-          let movie = res.data;
-
-          let moviesWatched;
-          if (localStorage.watchedMovies) {
-            moviesWatched = JSON.parse(localStorage.watchedMovies);
-          } else {
-            moviesWatched = "";
-          }
-
-          if (!moviesWatched.includes(movie.id)) {
-            movie = res.data;
-          } else {
-            console.log(`already watched ${movie.title}`);
-            movie = res.data;
-          }
+          let movie = res.data[0].movie;
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;

@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app:
+    container_name: Vue-App
+    image: ebiven/vue-cli
+    volumes:
+      - .:/code
+    ports:
+      - '8080:8080'
+      - '3000:3000'
+    command: npm run serve
+  db:
+    container_name: Mongo-db
+    image: mongo:4
+    volumes:
+      - ./db/data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=movies
+      - MONGO_INITDB_ROOT_USERNAME=movies_admin
+      - MONGO_INITDB_ROOT_PASSWORD=yAfc0xvc3
+      - 27020:27017
