@@ -5,103 +5,158 @@ const cors = require('cors')
 const axios = require('axios')
 const bodyParser = require('body-parser')
 const app = express()
-const MongoClient = require('mongodb').MongoClient
-const url = 'mongodb://movies_admin:yAfc0xvc3@db:27017'
-app.use(cors())
+const mongoose = require('mongoose')
+const passport = require('passport')
+const session = require('express-session')
+
+//Use some of those requirements
+const corsOptions = {
+  origin: '*',
+  credentials: true };
+
+app.use(cors(corsOptions));
+app.options('*', cors())
+
 app.use(bodyParser.json())
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+
+
+//Set up passport 
+
+app.use(passport.initialize());
+app.use(passport.session());  
+
+const User = require('./user')
+
+passport.use(User.createStrategy());
+ 
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+//Set up DB
+mongoose.connect('mongodb://movies_admin:yAfc0xvc3@db:27017',
+  {
+    useNewUrlParser: true,
+    autoIndex: true
+  })
+
 
 //Define global consts
+
 const port = 3000
 const dbName = 'movies';
+const db = mongoose.connection;
+const Movie = require('./movie')
+
+
+//Connect to db
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('Mongoose connected')
+});
+
 
 //Define functions
 
-function getWatchedMovies(callBack) {
-  MongoClient.connect(url).then(client => {
-    let db = client.db(dbName);
-    db.collection("watched").find({}).toArray(function (err, result) {
-      if (err) throw err;
-      client.close();
-      return callBack(result);
-    });
-  }).catch(error => {
-    console.log('ERROR:', error);
-  });
+function getWatchedMovies() {
+  Movie.find({}, function (err, docs) {
+    if (err) throw err;
+    return docs;
+  })
 }
 
 
-function insertMoviesToDb(movie) {
-  MongoClient.connect(url).then(client => {
-    let db = client.db(dbName);
-    db.collection("movies").update({title: movie.title}, {movie}, {upsert: true})
-    client.close();
-  }).catch(error => {
-    console.log('ERROR:', error);
-  });
+function insertMoviesToDb(movies) {
+  Movie.create({ title: movies.title, tmdb_id: movies.id }, function (err) {
+    if (err) return handleError(err);
+  })
 }
 
-
+function getWatchedMovieIds() {
+  Movie.find({}, function (err, docs) {
+    if (err) throw err;
+    let movies = docs;
+    let movieIds = movies.map(movie => movie.tmdb_id)
+  })
+}
 //Define routes
 
 
-//Gets a movie from the API and inserts to DB
+//Gets a movie from the API
 app.get('/api/movie', (req, res) => {
   let randomPage = Math.floor(1 + Math.random() * 13);
   axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=8a1d8477e658ad295f6cb31a24577b88&language=en-US&page=${randomPage}`)
-  .then(function (response) {
-    randomResult = Math.floor(Math.random() * 20);
-    let movie = response.data.results[randomResult]
-    insertMoviesToDb(movie)
-    res.json(movie)
-  }).catch(function (response) {
-    console.log(response);
-  });
+    .then(function (response) {
+      randomResult = Math.floor(Math.random() * 20);
+      let movie = response.data.results[randomResult]
+      res.json(movie)
+    }).catch(function (response) {
+      console.log(response);
+    });
 })
 
 
-//Gets a random movie from DB (front-end gets movies from here)
+//Gets a random movie from DB 
 app.get('/api/movie/db', (req, res) => {
-
-  MongoClient.connect(url).then(client => {
-    const db = client.db(dbName);
-    db.collection("movies").aggregate([ { $sample: { size: 1 } } ]).toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-      client.close();
-    });
-  }).catch(error => {
-    console.log('ERROR:', error);
+  Movie.aggregate([{ $sample: { size: 1 } }], function (err, result) {
+    if (err) throw err;
+    res.json(result);
   });
 })
 
-//Returns movies that user has watched. Not currently working
+//Returns movies that user has watched
 app.get('/api/movie/watched', (req, res) => {
-  MongoClient.connect(url).then(client => {
-    const db = client.db(dbName);
-    db.collection("watched").find({}).toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-      client.close();
-    });
-  }).catch(error => {
-    console.log('ERROR:', error);
-  });
+  Movie.find({}, function (err, docs) {
+    if (err) throw err;
+    res.json(docs)
+  })
 })
 
 //When user clicks on "Watched" in the front-end, movie gets stored. 
-app.post('/api/movie/watched', (req, res) => {
-  MongoClient.connect(url).then(client => {
-    const db = client.db(dbName);
-    const movie = req.body;
-    db.collection("watched").insertOne(movie, function (err, result) {
-      if (err) throw err;
-      console.log(result.result)
-      client.close();
-    });
-  }).catch(error => {
-    console.log('ERROR:', error);
-  });
+app.post('/api/movie/watched',  (req, res) => {
+  // const movieRequest = req.body;
+  // let dbMovie = new Movie({
+  //   title: movieRequest.title,
+  //   tmdb_id: movieRequest.movie_id,
+    
+  // })
+  // dbMovie.save(function (err) {
+  //   if (err) return handleError(err);
+  // });
+  console.log(req.user)
 })
 
+app.post('/register', (req, res) => {
+    let newUser = new User({
+      username: req.body.username,
+    });
+    User.register(newUser, req.body.password, function (err, user) {
+      if (err) {
+        throw err
+      }
+      passport.authenticate("local")(req, res, function () {
+        console.log('success') 
+      });
+
+    });
+})
+
+app.post('/login' , passport.authenticate('local'), function(req, res) {
+  console.log(`User ${req.user.username} is logged in`)
+  res.send(req.user)
+});
+
+app.get('/users', (req, res) => {
+  User.find({}, function (err, docs) {
+    if (err) throw err;
+    res.json(docs)
+  })})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

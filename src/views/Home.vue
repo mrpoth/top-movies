@@ -42,7 +42,7 @@ export default {
 
       axios.post("http://localhost:3000/api/movie/watched", {
         title: this.watchedMovies.title,
-        movie_id: this.watchedMovies.movie_id
+        movie_id: this.watchedMovies.movie_id,
       })
       .then(res => {
         return res.data
@@ -58,10 +58,10 @@ export default {
       //First, get one of the top-rated movies
       axios
         .get(
-          "http://localhost:3000/api/movie/db"
+          "http://localhost:3000/api/movie"
         )
         .then(res => {
-          let movie = res.data[0].movie;
+          let movie = res.data
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;

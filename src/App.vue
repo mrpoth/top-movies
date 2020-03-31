@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
+  <div id="app" class="dark-theme">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">About</router-link> |
+      <router-link to="/register">Register</router-link> |
           <button @click="changeTheme" class="btn btn-theme">Change theme</button>
     </div>
     <router-view/>
@@ -13,11 +14,18 @@ export default {
   methods:{
     
     changeTheme() {
-      let body = document.getElementsByTagName('body')[0];
-      let home = document.getElementById('home');
-      if (!home.classList.contains('light-theme' && !body.classList.contains('light-theme')) ) {
-        home.classList.toggle('light-theme');
-        body.classList.toggle('light-theme');
+      let body = document.body
+      let app = document.getElementById('app');
+      if (!app.classList.contains('light-theme') && !body.classList.contains('light-theme') ) {
+        app.classList.remove('dark-theme');
+        body.classList.remove('dark-theme');
+        app.classList.add('light-theme');
+        body.classList.add('light-theme');
+      } else {
+        app.classList.remove('light-theme');
+        body.classList.remove('light-theme');
+        app.classList.add('dark-theme');
+        body.classList.add('dark-theme');
       }
     }
   }
@@ -29,7 +37,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 #nav {
@@ -45,10 +52,8 @@ export default {
   color: #0f4c75;
 }
 
-body {
+.dark-theme {
   background-color: #1b262c;
-}
-.home {
   color: #bbe1fa;
 }
 
@@ -56,6 +61,7 @@ body {
   color:#004775;
   background-color:#f1f1f1;
 }
+
 
 .btn {
   background-color: #3282b8;
