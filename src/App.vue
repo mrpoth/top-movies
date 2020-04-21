@@ -72,7 +72,15 @@ export default {
 }
 
 .btn-theme {
-  position:fixed;
+  position:absolute;
   right:20px;
+}
+
+@media screen and (max-width: 768px) {
+  .btn-theme {
+    display:block;
+    position:relative;
+    right:auto;
+  }
 }
 </style>
