@@ -1,3 +1,5 @@
 module.exports = {
-  mode: 'production'
-}
+    devServer: {
+      proxy: 'http://localhost:3000'
+    }
+  }
