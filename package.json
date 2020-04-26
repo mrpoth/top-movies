@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve & nodemon server/server.js",
+    "serve": "vue-cli-service serve",
+    "api:start": "nodemon server/server.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },

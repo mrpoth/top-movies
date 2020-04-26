@@ -8,14 +8,19 @@ services:
     ports:
       - '80:80'
   app:
-    container_name: Vue-App
     image: ebiven/vue-cli
     volumes:
       - .:/code
     ports:
       - '8080:8080'
-      - '3000:3000'
     command: npm run serve
+  api:
+    image: ebiven/vue-cli
+    volumes:
+      - .:/code
+    ports:
+      - '3000:3000'
+    command: npm run api:start
   db:
     container_name: Mongo-db
     image: mongo:4
