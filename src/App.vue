@@ -3,7 +3,6 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/register">Register</router-link> |
           <button @click="changeTheme" class="btn btn-theme">Change theme</button>
     </div>
     <router-view/>
@@ -73,7 +72,15 @@ export default {
 }
 
 .btn-theme {
-  position:fixed;
+  position:absolute;
   right:20px;
+}
+
+@media screen and (max-width: 768px) {
+  .btn-theme {
+    display:block;
+    position:relative;
+    right:auto;
+  }
 }
 </style>

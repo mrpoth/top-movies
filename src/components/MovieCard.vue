@@ -11,9 +11,9 @@
     <h5 v-bind="movies">Rating: {{ movies.rating }}</h5>
     <div class="story-overview"><p v-text="movies.overview"></p></div>
     <div>
-      <button @click="$emit('add-watched')" class="btn" :disabled="disabled">
+      <!-- <button @click="$emit('add-watched')" class="btn" :disabled="disabled">
         Watched
-      </button>
+      </button> -->
     </div>
     <div>
       <button @click="$emit('show-another')" class="btn">Show Another</button>
