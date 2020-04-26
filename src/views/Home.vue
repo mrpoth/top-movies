@@ -40,7 +40,7 @@ export default {
       this.watchedMovies.title = this.movies.title;
       this.watchedMovies.movie_id= this.movies.id;
 
-      axios.post("http://localhost:3000/api/movie/watched", {
+      axios.post("http://ec2-3-10-58-202.eu-west-2.compute.amazonaws.com:3000/api/movie/watched", {
         title: this.watchedMovies.title,
         movie_id: this.watchedMovies.movie_id,
       })
@@ -58,7 +58,7 @@ export default {
       //First, get one of the top-rated movies
       axios
         .get(
-          "http://localhost:3000/api/movie"
+          "http://ec2-3-10-58-202.eu-west-2.compute.amazonaws.com:3000/api/movie"
         )
         .then(res => {
           let movie = res.data
