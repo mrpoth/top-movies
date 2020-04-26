@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+ssh -i ~/.ssh/movie-app.pem ubuntu@ec2-3-10-58-202.eu-west-2.compute.amazonaws.com 'cd top-movies &&\
+ eval $(ssh-agent -s) &&\
+ ssh-add /home/ubuntu/.ssh/deploy &&\
+ git pull &&\
+ sudo docker-compose -f docker-compose.prod.yml run app npm install &&\
+ sudo docker-compose -f docker-compose.prod.yml run app npm run build &&\
+ sudo docker-compose -f docker-compose.prod.yml stop &&\
+ sudo docker-compose -f docker-compose.prod.yml up -d'

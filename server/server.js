@@ -49,7 +49,7 @@ mongoose.connect('mongodb://movies_admin:yAfc0xvc3@db:27017',
 
 //Define global consts
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 const dbName = 'movies';
 const db = mongoose.connection;
 const Movie = require('./movie')
