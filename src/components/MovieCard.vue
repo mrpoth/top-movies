@@ -4,16 +4,16 @@
     <h2 v-text="movies.title"></h2>
     <h3>({{ movies.release_date }})</h3>
     <ul>
-      <li v-for="genre in movies.genres" v-bind:key="genre.id">
-        {{ genre.name }}
-      </li>
+      <li v-for="genre in movies.genres" v-bind:key="genre.id">{{ genre.name }}</li>
     </ul>
     <h5 v-bind="movies">Rating: {{ movies.rating }}</h5>
-    <div class="story-overview"><p v-text="movies.overview"></p></div>
+    <div class="story-overview">
+      <p v-text="movies.overview"></p>
+    </div>
     <div>
       <!-- <button @click="$emit('add-watched')" class="btn" :disabled="disabled">
         Watched
-      </button> -->
+      </button>-->
     </div>
     <div>
       <button @click="$emit('show-another')" class="btn">Show Another</button>
@@ -50,14 +50,16 @@ li {
   height: auto;
   max-width: 280px;
   box-shadow: 1px 1px 20px 3px #828282;
-  border-radius:5px;
+  border-radius: 5px;
 }
-
 
 @media (min-width: 1025px) {
   .story-overview {
     max-width: 35%;
     margin: 0 auto;
+  }
+  .movie-poster {
+    max-width: 180px;
   }
 }
 </style>
