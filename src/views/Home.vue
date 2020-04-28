@@ -20,6 +20,7 @@ export default {
   },
   data() {
     return {
+      apiKey: process.env.VUE_APP_TMDB_KEY,
       movies: {
         id: "",
         title: "",
@@ -78,7 +79,7 @@ export default {
       //Now, a second request for the genres
       axios
         .get(
-          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${process.env.VUE_APP_TMDB_KEY}&language=en-US`
+          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${this.apiKey}&language=en-US`
         )
         .then(res => {
           this.movies.genres = res.data.genres;
