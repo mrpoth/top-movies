@@ -32,7 +32,8 @@ export default {
       watchedMovies: [{
         title: "",
         movie_id: ""
-      }]
+      }],
+      apiKey: process.env.VUE_APP_TMDB_KEY
     };
   },
   methods: {
@@ -56,7 +57,6 @@ export default {
     },
     getMovie() {
       //First, get one of the top-rated movies
-      let apiKey = process.env.TMDB_KEY
       axios
         .get(
           "moviesroulette.com:3000/api/movie"
