@@ -40,7 +40,7 @@ export default {
       this.watchedMovies.title = this.movies.title;
       this.watchedMovies.movie_id= this.movies.id;
 
-      axios.post("http://ec2-3-10-58-202.eu-west-2.compute.amazonaws.com:3000/api/movie/watched", {
+      axios.post("moviesroulette.com:3000/api/movie/watched", {
         title: this.watchedMovies.title,
         movie_id: this.watchedMovies.movie_id,
       })
@@ -56,9 +56,10 @@ export default {
     },
     getMovie() {
       //First, get one of the top-rated movies
+      let apiKey = process.env.TMDB_KEY
       axios
         .get(
-          "http://ec2-3-10-58-202.eu-west-2.compute.amazonaws.com:3000/api/movie"
+          "moviesroulette.com:3000/api/movie"
         )
         .then(res => {
           let movie = res.data
@@ -78,7 +79,7 @@ export default {
       //Now, a second request for the genres
       axios
         .get(
-          `https://api.themoviedb.org/3/movie/${movieID}?api_key=8a1d8477e658ad295f6cb31a24577b88&language=en-US`
+          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${apiKey}&language=en-US`
         )
         .then(res => {
           this.movies.genres = res.data.genres;

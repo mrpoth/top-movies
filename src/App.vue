@@ -31,8 +31,12 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
-      document.title = to.meta.title || "Movies Roulette";
+    $route(to) {
+      if (to.meta.title) {
+        document.title = to.meta.title
+      } else {
+       "Movies Roulette";
+       }
     }
   }
 };
@@ -86,7 +90,7 @@ body {
   right: 20px;
 }
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   .btn-theme {
     display: block;
     position: relative;

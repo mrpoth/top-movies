@@ -58,6 +58,8 @@ li {
     max-width: 35%;
     margin: 0 auto;
   }
+}
+@media (max-width: 768px) {
   .movie-poster {
     max-width: 180px;
   }
