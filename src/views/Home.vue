@@ -79,7 +79,7 @@ export default {
       //Now, a second request for the genres
       axios
         .get(
-          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${apiKey}&language=en-US`
+          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${this.apiKey}&language=en-US`
         )
         .then(res => {
           this.movies.genres = res.data.genres;
