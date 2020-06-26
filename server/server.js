@@ -40,16 +40,16 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //Set up DB
-mongoose.connect('mongodb://movies_admin:yAfc0xvc3@db:27017',
-  {
-    useNewUrlParser: true,
-    autoIndex: true
-  })
+// mongoose.connect('mongodb://movies_admin:yAfc0xvc3@db:27017',
+//   {
+//     useNewUrlParser: true,
+//     autoIndex: true
+//   })
 
 
 //Define global consts
 
-const port = process.env.PORT
+const port = process.env.NODE_PORT
 const dbName = 'movies';
 const db = mongoose.connection;
 const Movie = require('./movie')

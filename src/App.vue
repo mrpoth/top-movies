@@ -30,15 +30,15 @@ export default {
       }
     }
   },
-  watch: {
-    $route(to) {
-      if (to.meta.title) {
-        document.title = to.meta.title
-      } else {
-       "Movies Roulette";
-       }
-    }
-  }
+watch: {
+      '$route':{
+        handler: (to) => {
+          document.title = `${to.meta.title} - Movies Roulette` || 'Movies Roulette'
+        },
+         immediate: true
+      }
+    },
+
 };
 </script>
 <style>
