@@ -36,22 +36,7 @@ export default {
       }]
     };
   },
-  methods: {
-    addToWatched() {
-      this.watchedMovies.title = this.movies.title;
-      this.watchedMovies.movie_id= this.movies.id;
-
-      axios.post("http://moviesroulette.com:3000/api/movie/watched", {
-        title: this.watchedMovies.title,
-        movie_id: this.watchedMovies.movie_id,
-      })
-      .then(res => {
-        return res.data
-      }).catch(err => {
-        console.log(err)
-      })
-      
-    },
+  methods: {  
     showAnother() {
       this.getMovie();
     },
@@ -62,27 +47,14 @@ export default {
           "http://moviesroulette.com:3000/api/movie"
         )
         .then(res => {
-          let movie = res.data
+          let movie = res.data.movie
           this.movies.title = movie.title;
           this.movies.rating = movie.vote_average;
           this.movies.id = movie.id;
           this.movies.poster = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
           this.movies.release_date = movie.release_date.slice(0, 4);
           this.movies.overview = movie.overview;
-          this.getGenres(movie.id);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    getGenres(movieID) {
-      //Now, a second request for the genres
-      axios
-        .get(
-          `https://api.themoviedb.org/3/movie/${movieID}?api_key=${this.apiKey}&language=en-US`
-        )
-        .then(res => {
-          this.movies.genres = res.data.genres;
+          this.movies.genres = res.data.genres
         })
         .catch(err => {
           console.log(err);
